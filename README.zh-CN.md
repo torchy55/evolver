@@ -134,6 +134,10 @@ MAJOR.MINOR.PATCH
 
 ## 更新日志
 
+### v1.10.1
+- **创新冷却 (Innovation Cooldown)**：在 `analyzeRecentHistory()` 中追踪近期创新目标，并在 GEP 提示词中注入 `Context [Innovation Cooldown]` 段，防止 Hand Agent 在连续周期中反复对同一技能/模块进行创新。
+- **信号增强**：`analyzeRecentHistory()` 新增 `recentInnovationTargets` 返回值（目标路径到最近 10 轮出现次数的映射）。
+
 ### v1.10.0
 - **运维模块** (`src/ops/`)：从环境相关的 wrapper 中提取 6 个可移植模块：
   - `lifecycle.js` -- 进程启停/重启/状态/健康检查

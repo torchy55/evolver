@@ -13,6 +13,7 @@ function buildGepPrompt({
   capsulesPreview,
   capabilityCandidatesPreview,
   externalCandidatesPreview,
+  recentInnovationTargets,
 }) {
   const parentValue = parentEventId ? `"${parentEventId}"` : 'null';
   const selectedGeneId = selectedGene && selectedGene.id ? selectedGene.id : null;
@@ -377,6 +378,15 @@ Final Directive
 
 You are an evolution engine. Every cycle must leave the system measurably better.
 Protocol compliance matters, but tangible output matters more.
+
+Context [Innovation Cooldown]:
+${(() => {
+  var targets = recentInnovationTargets || {};
+  var keys = Object.keys(targets);
+  if (keys.length === 0) return '(none -- all targets available)';
+  return 'The following targets were innovated on in the last 10 cycles. Do NOT choose them again unless no other option exists:\n' +
+    keys.map(function(k) { return '- ' + k + ' (' + targets[k] + 'x)'; }).join('\n');
+})()}
 
 Context [Signals]:
 ${JSON.stringify(signals)}

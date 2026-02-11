@@ -156,6 +156,10 @@ MAJOR.MINOR.PATCH
 
 ## Changelog
 
+### v1.10.1
+- **Innovation Cooldown**: Track recent innovation targets in `analyzeRecentHistory()` and inject `Context [Innovation Cooldown]` into GEP prompt, preventing the Hand Agent from repeatedly innovating on the same skill/module across consecutive cycles.
+- **Signal Enhancement**: `analyzeRecentHistory()` now returns `recentInnovationTargets` (map of target path to count in last 10 events).
+
 ### v1.10.0
 - **Operations Module** (`src/ops/`): 6 portable modules extracted from environment-specific wrapper:
   - `lifecycle.js` -- process start/stop/restart/status/health check
