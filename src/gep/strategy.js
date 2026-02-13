@@ -51,9 +51,9 @@ function resolveStrategy() {
     var fi = String(process.env.FORCE_INNOVATION || process.env.EVOLVE_FORCE_INNOVATION || '').toLowerCase();
     if (fi === 'true') name = 'innovate';
   }
-  var base = STRATEGIES[name] || STRATEGIES['balanced'];
-  // Return a shallow copy to avoid mutating the shared STRATEGIES object.
-  return Object.assign({}, base, { name: name });
+  var strategy = STRATEGIES[name] || STRATEGIES['balanced'];
+  strategy.name = name;
+  return strategy;
 }
 
 function getStrategyNames() {
