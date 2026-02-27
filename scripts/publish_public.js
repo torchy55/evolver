@@ -510,7 +510,7 @@ function main() {
         let commitMsg = msg.replace(/"/g, '\\"');
         if (contributors.length > 0) {
           const trailers = contributors.map(c => `Co-authored-by: ${c}`).join('\n');
-          commitMsg += `\\n\\n${trailers.replace(/"/g, '\\"')}`;
+          commitMsg += `\n\n${trailers.replace(/"/g, '\\"')}`;
           process.stdout.write(`Including ${contributors.length} contributor(s) in publish commit.\n`);
         }
         run(
