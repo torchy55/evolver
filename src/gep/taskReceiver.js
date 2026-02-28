@@ -239,7 +239,7 @@ function selectBestTask(tasks, memoryEvents) {
 
   // Already-claimed tasks for this node always take top priority (resume work)
   var myClaimedTask = tasks.find(function(t) {
-    return t.status === 'claimed' && t.claimed_by_node_id === nodeId;
+    return t.status === 'claimed' && t.claimed_by === nodeId;
   });
   if (myClaimedTask) return myClaimedTask;
 
