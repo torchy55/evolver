@@ -38,6 +38,7 @@ const { clip, writePromptArtifact, renderSessionsSpawnCall } = require('./gep/br
 const { getEvolutionDir } = require('./gep/paths');
 const { shouldReflect, buildReflectionContext, recordReflection } = require('./gep/reflection');
 const { loadNarrativeSummary } = require('./gep/narrativeMemory');
+const { maybeReportIssue } = require('./gep/issueReporter');
 
 const REPO_ROOT = getRepoRoot();
 
@@ -996,6 +997,19 @@ async function run() {
     }
   } catch (e) {
     console.log(`[QuestionGenerator] Generation failed (non-fatal): ${e.message}`);
+  }
+
+  // --- Auto GitHub Issue Reporter ---
+  // When persistent failures are detected, file an issue to the upstream repo
+  // with sanitized logs and environment info.
+  try {
+    await maybeReportIssue({
+      signals,
+      recentEvents,
+      sessionLog: recentMasterLog,
+    });
+  } catch (e) {
+    console.log(`[IssueReporter] Check failed (non-fatal): ${e.message}`);
   }
 
   // LessonL: lessons received from Hub during fetch
