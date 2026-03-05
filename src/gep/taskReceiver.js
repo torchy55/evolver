@@ -6,7 +6,7 @@
 //     matching via memory graph history.
 // ---------------------------------------------------------------------------
 
-const { getNodeId, getHubNodeSecret, buildHubHeaders } = require('./a2aProtocol');
+const { getNodeId, buildHubHeaders } = require('./a2aProtocol');
 
 const HUB_URL = process.env.A2A_HUB_URL || process.env.EVOMAP_HUB_URL || 'https://evomap.ai';
 
