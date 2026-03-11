@@ -64,7 +64,9 @@ const TODAY_LOG = path.join(MEMORY_DIR, new Date().toISOString().split('T')[0] +
 // Ensure memory directory exists so state/cache writes work.
 try {
   if (!fs.existsSync(MEMORY_DIR)) fs.mkdirSync(MEMORY_DIR, { recursive: true });
-} catch (e) {}
+} catch (e) {
+  console.warn('[Evolver] Failed to create MEMORY_DIR (may cause downstream errors):', e && e.message || e);
+}
 
 function formatSessionLog(jsonlContent) {
   const result = [];
@@ -1041,7 +1043,9 @@ async function run() {
       try {
         const { tryReadMemoryGraphEvents } = require('./gep/memoryGraph');
         taskMemoryEvents = tryReadMemoryGraphEvents(1000);
-      } catch {}
+      } catch (e) {
+        console.warn('[TaskReceiver] MemoryGraph read failed (task selection proceeds without history):', e && e.message || e);
+      }
       const best = selectBestTask(hubTasks, taskMemoryEvents);
       if (best) {
         const alreadyClaimed = best.status === 'claimed';
@@ -1085,7 +1089,9 @@ async function run() {
         }
       }
     }
-  } catch {}
+  } catch (e) {
+    console.warn('[Commitment] Overdue task check failed (non-fatal):', e && e.message || e);
+  }
 
   // --- Worker Pool: select task from heartbeat available_work (deferred claim) ---
   // Only remember the best task and inject its signals; actual claim+complete
@@ -1099,7 +1105,9 @@ async function run() {
         try {
           const { tryReadMemoryGraphEvents } = require('./gep/memoryGraph');
           taskMemoryEvents = tryReadMemoryGraphEvents(1000);
-        } catch {}
+        } catch (e) {
+          console.warn('[WorkerPool] MemoryGraph read failed (task selection proceeds without history):', e && e.message || e);
+        }
         const best = selectBestTask(workerTasks, taskMemoryEvents);
         if (best) {
           activeTask = best;
@@ -1174,7 +1182,9 @@ async function run() {
   for (const c of newCandidates) {
     try {
       appendCandidateJsonl(c);
-    } catch (e) {}
+    } catch (e) {
+      console.warn('[Candidates] Failed to persist candidate:', e && e.message || e);
+    }
   }
   const recentCandidates = readRecentCandidates(20);
   const capabilityCandidatesPreview = renderCandidatesPreview(recentCandidates.slice(-8), 1600);
@@ -1237,7 +1247,9 @@ async function run() {
         2
       )}\n\`\`\``;
     }
-  } catch (e) {}
+  } catch (e) {
+    console.warn('[ExternalCandidates] Preview build failed (non-fatal):', e && e.message || e);
+  }
 
   // Search-First Evolution: query Hub for reusable solutions before local reasoning.
   let hubHit = null;
@@ -1425,7 +1437,9 @@ async function run() {
         .split('\n')
         .map(l => l.trim())
         .filter(Boolean);
-    } catch (e) {}
+    } catch (e) {
+      console.warn('[SolidifyState] Failed to read baseline untracked files:', e && e.message || e);
+    }
 
     try {
       const out = execSync('git rev-parse HEAD', {
@@ -1436,7 +1450,9 @@ async function run() {
         windowsHide: true,
       });
       baselineHead = String(out || '').trim() || null;
-    } catch (e) {}
+    } catch (e) {
+      console.warn('[SolidifyState] Failed to read git HEAD:', e && e.message || e);
+    }
 
     const maxFiles =
       selectedGene && selectedGene.constraints && Number.isFinite(Number(selectedGene.constraints.max_files))
